@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+@layer base {
+  html, body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #111827;
+    background-color: #FAFAFA;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+}
+
+/* CareFund Global Typography Utility Classes */
+.cf-title {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.cf-section-heading {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+@media (min-width: 768px) {
+  .cf-section-heading {
+    font-size: 24px;
+  }
+}
+
+.cf-card-heading {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+@media (min-width: 768px) {
+  .cf-card-heading {
+    font-size: 18px;
+  }
+}
+
+.cf-body {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+@media (min-width: 768px) {
+  .cf-body {
+    font-size: 16px;
+  }
+}
+
+.cf-secondary {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #6B7280;
+}
+@media (min-width: 768px) {
+  .cf-secondary {
+    font-size: 14px;
+  }
+}
+
+.cf-label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #374151;
+}
+
+.cf-financial-number {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+@media (min-width: 768px) {
+  .cf-financial-number {
+    font-size: 32px;
+  }
+}
+
+.cf-status-text {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+@media (min-width: 768px) {
+  .cf-status-text {
+    font-size: 13px;
+  }
+}
+
+/* CareFund Universal Button System */
+.cf-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  background-color: #DC2626;
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 150ms ease-in-out;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.cf-btn-primary:hover:not(:disabled) {
+  background-color: #B91C1C;
+}
+.cf-btn-primary:active:not(:disabled) {
+  background-color: #991B1B;
+}
+.cf-btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.cf-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  background-color: #FFFFFF;
+  color: #1F2937;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid #D1D5DB;
+  transition: all 150ms ease-in-out;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.cf-btn-secondary:hover:not(:disabled) {
+  background-color: #F9FAFB;
+  border-color: #9CA3AF;
+  color: #111827;
+}
+.cf-btn-secondary:active:not(:disabled) {
+  background-color: #F3F4F6;
+}
+.cf-btn-secondary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.cf-btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  background-color: #FEF2F2;
+  color: #B91C1C;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid #FECACA;
+  transition: all 150ms ease-in-out;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.cf-btn-danger:hover:not(:disabled) {
+  background-color: #FEE2E2;
+  border-color: #FCA5A5;
+}
+.cf-btn-danger:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Consistent Card */
+.cf-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+}

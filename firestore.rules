@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Health / test connectivity check as requested by Firebase integration spec
+    match /test/connection {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // CareFund Medical Cases collection
+    match /cases/{caseId} {
+      // Allow public reading of verified cases for transparency and community crowdfunding
+      allow read: if true;
+
+      // Allow creating a new case from patient portal or authorized desk
+      allow create: if request.resource.data.keys().hasAll(['id', 'patientName', 'treatment', 'hospital', 'totalTreatmentCost', 'status'])
+                    && request.resource.data.id is string
+                    && request.resource.data.patientName is string
+                    && request.resource.data.patientName.size() <= 200
+                    && request.resource.data.treatment is string
+                    && request.resource.data.hospital is string
+                    && request.resource.data.totalTreatmentCost is number
+                    && request.resource.data.totalTreatmentCost >= 0;
+
+      // Allow updating case status, raised amounts, timeline, and document checks
+      allow update: if request.resource.data.id == resource.data.id
+                    && request.resource.data.totalTreatmentCost is number
+                    && request.resource.data.alreadyRaised is number;
+
+      // Deletions are forbidden to maintain audit integrity
+      allow delete: if false;
+    }
+
+    // CareFund Escrow Donations collection
+    match /donations/{donationId} {
+      // Allow donors to read donation receipts
+      allow read: if true;
+
+      // Allow creating donations into hospital escrow
+      allow create: if request.resource.data.keys().hasAll(['id', 'caseId', 'amount', 'timestamp'])
+                    && request.resource.data.amount is number
+                    && request.resource.data.amount > 0
+                    && request.resource.data.caseId is string
+                    && request.resource.data.id is string;
+
+      // Donations are immutable once recorded into escrow
+      allow update, delete: if false;
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "CareFund — Verified Healthcare Funding",
+  "description": "Transparent medical crowdfunding platform connecting patients, verified hospitals, and donors with strict verification and escrow settlements.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

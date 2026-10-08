@@ -1,0 +1,114 @@
+{
+  "entities": {
+    "MedicalCase": {
+      "title": "MedicalCase",
+      "description": "Patient medical assistance request verified by hospital desks and clinical reviewers",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique CareFund case ID, e.g. CF-CHN-2026-00124"
+        },
+        "patientName": {
+          "type": "string",
+          "description": "Full name of the patient"
+        },
+        "patientAge": {
+          "type": "number",
+          "description": "Age of the patient"
+        },
+        "patientGender": {
+          "type": "string",
+          "description": "Gender of the patient"
+        },
+        "treatment": {
+          "type": "string",
+          "description": "Medical procedure or condition"
+        },
+        "hospital": {
+          "type": "string",
+          "description": "Name of the admitting accredited hospital partner"
+        },
+        "hospitalAddress": {
+          "type": "string",
+          "description": "Location of hospital"
+        },
+        "city": {
+          "type": "string",
+          "description": "City and State"
+        },
+        "diagnosisSummary": {
+          "type": "string",
+          "description": "Clinical diagnosis summary"
+        },
+        "totalTreatmentCost": {
+          "type": "number",
+          "description": "Total estimated treatment cost"
+        },
+        "verifiedFundingGap": {
+          "type": "number",
+          "description": "Net verified funding gap required after insurance and aid"
+        },
+        "alreadyRaised": {
+          "type": "number",
+          "description": "Escrow amount raised to date"
+        },
+        "stillNeeded": {
+          "type": "number",
+          "description": "Remaining gap required"
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status in CareFund workflow"
+        }
+      },
+      "required": ["id", "patientName", "treatment", "hospital", "totalTreatmentCost", "verifiedFundingGap", "status"]
+    },
+    "DonationRecord": {
+      "title": "DonationRecord",
+      "description": "Crowdfunding contribution ring-fenced directly to hospital escrow",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique donation record transaction ID"
+        },
+        "caseId": {
+          "type": "string",
+          "description": "Associated medical case ID"
+        },
+        "donorName": {
+          "type": "string",
+          "description": "Name of donor or Anonymous"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Donation amount in INR"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp of donation"
+        },
+        "isEscrowConfirmed": {
+          "type": "boolean",
+          "description": "Whether deposit is locked in hospital escrow"
+        }
+      },
+      "required": ["id", "caseId", "amount", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/cases/{caseId}": {
+      "schema": {
+        "$ref": "#/entities/MedicalCase"
+      },
+      "description": "Collection of verified patient medical cases"
+    },
+    "/donations/{donationId}": {
+      "schema": {
+        "$ref": "#/entities/DonationRecord"
+      },
+      "description": "Collection of community crowdfunding donations into hospital escrow"
+    }
+  }
+}
