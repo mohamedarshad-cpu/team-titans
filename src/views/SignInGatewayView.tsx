@@ -77,6 +77,17 @@ export const SignInGatewayView: React.FC<SignInGatewayViewProps> = ({ onSuccess 
     }
   };
 
+  const handleQuickDemoLogin = (role: CareFundRole, name: string, email: string) => {
+    const authUser: AuthenticatedUser = {
+      uid: `demo_${role}_${Date.now()}`,
+      email: email,
+      displayName: name,
+      phoneNumber: '+919876543210',
+      photoURL: null,
+    };
+    onSuccess(authUser, role);
+  };
+
   /**
    * Handle Google OAuth Sign In
    */
@@ -99,6 +110,8 @@ export const SignInGatewayView: React.FC<SignInGatewayViewProps> = ({ onSuccess 
         setErrorMessage('Sign-in popup was closed. Please try again.');
       } else if (error?.code === 'auth/popup-blocked') {
         setErrorMessage('Popup was blocked by your browser. Please allow popups or continue with Phone Number.');
+      } else if (error?.code === 'auth/unauthorized-domain') {
+        setErrorMessage('This preview domain is not authorized in Firebase Console for Google Sign-In. Please continue with Phone Number or Quick Demo Portal Access below.');
       } else {
         setErrorMessage(
           error?.message || 'Google sign-in could not be completed. Please continue with Phone Number.'
@@ -297,6 +310,43 @@ export const SignInGatewayView: React.FC<SignInGatewayViewProps> = ({ onSuccess 
               <Phone className="w-4 h-4 text-neutral-600" />
               <span>Continue with Phone Number</span>
             </button>
+
+            {/* Quick Demo Portal Access (Bypasses domain restrictions for instant testing) */}
+            <div className="pt-4 border-t border-neutral-100 mt-4">
+              <p className="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider mb-2.5 text-center">
+                Quick Demo Portal Access
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoLogin('patient', 'Revathi S. (Patient)', 'revathi@carefund.org')}
+                  className="p-2 rounded-xl border border-neutral-200 hover:border-red-300 hover:bg-red-50/40 text-left text-xs font-semibold text-neutral-800 transition-all cursor-pointer shadow-2xs"
+                >
+                  🏥 Patient Portal
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoLogin('hospital', 'Dr. C. Balasubramanian', 'hospital@apollo.org')}
+                  className="p-2 rounded-xl border border-neutral-200 hover:border-red-300 hover:bg-red-50/40 text-left text-xs font-semibold text-neutral-800 transition-all cursor-pointer shadow-2xs"
+                >
+                  🏨 Hospital Desk
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoLogin('donor', 'Karthik Ramanathan', 'donor@carefund.org')}
+                  className="p-2 rounded-xl border border-neutral-200 hover:border-red-300 hover:bg-red-50/40 text-left text-xs font-semibold text-neutral-800 transition-all cursor-pointer shadow-2xs"
+                >
+                  🤝 Donor Portal
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemoLogin('reviewer', 'Dr. K. Swaminathan, MD', 'reviewer@carefund.org')}
+                  className="p-2 rounded-xl border border-neutral-200 hover:border-red-300 hover:bg-red-50/40 text-left text-xs font-semibold text-neutral-800 transition-all cursor-pointer shadow-2xs"
+                >
+                  ⚖️ Reviewer Portal
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
