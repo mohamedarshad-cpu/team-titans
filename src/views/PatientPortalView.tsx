@@ -870,43 +870,14 @@ export const PatientPortalView: React.FC<PatientPortalViewProps> = ({
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
-      <h1 className="cf-title text-neutral-900">{patientProfile.fullName} — Patient Dashboard</h1>
-      <section className="cf-card"><h2 className="cf-section-heading">1. Patient Profile</h2></section>
-      <section className="cf-card"><h2 className="cf-section-heading">2. Medical Information</h2></section>
-      <section className="cf-card"><h2 className="cf-section-heading">3. Funding Requirement</h2></section>
-      <section className="cf-card">
-        <h2 className="cf-section-heading">4. Medical Document Upload</h2>
-        <div className="mt-4">
-          <input type="file" onChange={handleFileUpload} className="hidden" id="doc-upload" multiple />
-          <label htmlFor="doc-upload" className="cf-btn-primary cursor-pointer">
-            <UploadCloud className="w-4 h-4" /> Upload Documents
-          </label>
-        </div>
-      </section>
-      <section className="cf-card"><h2 className="cf-section-heading">5. Case Verification Status</h2></section>
-      <section className="cf-card"><h2 className="cf-section-heading">6. Funding Progress</h2></section>
+      {/* All content wrapped here */}
     </div>
   );
 };
 
 
-            <div className="cf-card p-6 space-y-3">
-              <h3 className="cf-card-heading text-neutral-900">Hospital Liaison Assistance</h3>
-              <p className="text-xs text-neutral-600 leading-relaxed">
-                If your hospital estimate is pending or CMCHIS government insurance query is raised, reach out to the CareFund Chennai Liaison Desk:
-              </p>
-              <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200 text-xs space-y-1">
-                <p className="font-semibold text-neutral-900">Apollo Hospitals Liaison Desk</p>
-                <p className="text-neutral-600 flex items-center gap-1.5">
-                  <PhoneCall className="w-3.5 h-3.5 text-neutral-500" />
-                  <span>044-2829-0200 / +91 98409 11024</span>
-                </p>
-                <p className="text-[11px] text-neutral-500">Working hours: 8:00 AM – 8:00 PM (Daily)</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+
+
 
       {/* ============================================================== */}
       {/* TAB: CREATE ASSISTANCE REQUEST                                  */}
