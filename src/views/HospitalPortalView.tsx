@@ -367,12 +367,12 @@ export const HospitalPortalView: React.FC<HospitalPortalViewProps> = ({
       )}
 
       {/* ============================================================== */}
-      {/* TAB: CASES                                                     */}
+      {/* TAB: CASES / ASSIGNED PATIENTS                                 */}
       {/* ============================================================== */}
-      {activeTab === 'cases' && (
+      {(activeTab === 'cases' || activeTab === 'assigned-patients') && (
         <div className="space-y-8">
           <div>
-            <h1 className="cf-title text-neutral-900">Hospital Admitted Cases</h1>
+            <h1 className="cf-title text-neutral-900">Hospital Assigned Patients</h1>
             <p className="cf-body text-neutral-600 mt-1">
               Complete registry of patients admitted to Apollo Hospitals Chennai under CareFund assistance.
             </p>
@@ -448,7 +448,7 @@ export const HospitalPortalView: React.FC<HospitalPortalViewProps> = ({
       {/* ============================================================== */}
       {/* TAB: PATIENT VERIFICATION                                      */}
       {/* ============================================================== */}
-      {activeTab === 'verification' && (
+      {(activeTab === 'verification' || activeTab === 'pending-verification') && (
         <div className="space-y-8">
           <div>
             <h1 className="cf-title text-neutral-900">Patient Verification Desk</h1>
@@ -918,6 +918,161 @@ export const HospitalPortalView: React.FC<HospitalPortalViewProps> = ({
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* TAB: HOSPITAL LETTERS                                          */}
+      {/* ============================================================== */}
+      {activeTab === 'hospital-letters' && (
+        <div className="space-y-8">
+          <div>
+            <h1 className="cf-title text-neutral-900">Hospital Letters & Official Attestations</h1>
+            <p className="cf-body text-neutral-600 mt-1">
+              Official hospital admission letters, clinical estimate certificates, and liaison attestations.
+            </p>
+          </div>
+
+          <TrustMessageBanner />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="cf-card p-6 space-y-4 border-l-4 border-l-emerald-600">
+              <div className="flex items-start justify-between">
+                <div>
+                  <span className="text-xs font-mono text-neutral-500">REF: APH-LET-2026-081</span>
+                  <h3 className="text-base font-bold text-neutral-900 mt-0.5">Clinical Estimate & Admission Certificate</h3>
+                  <p className="text-xs text-neutral-600">Patient: Kavitha R. (Cardiac Surgery)</p>
+                </div>
+                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded">
+                  Active
+                </span>
+              </div>
+              <p className="text-xs text-neutral-700 bg-neutral-50 p-3 rounded-lg leading-relaxed">
+                "Certified that Patient Kavitha R. is admitted under Dr. S. Murali for elective cardiac surgery. The total estimated cost of procedure and 7 days hospital stay is ₹7,00,000."
+              </p>
+              <div className="flex items-center justify-between text-xs text-neutral-500 pt-2 border-t border-neutral-100">
+                <span>Issued: 04 Oct 2026 · Signed by Nodal Medical Superintendent</span>
+                <span className="font-semibold text-red-600">Apollo Seal Verified ✓</span>
+              </div>
+            </div>
+
+            <div className="cf-card p-6 space-y-4 border-l-4 border-l-emerald-600">
+              <div className="flex items-start justify-between">
+                <div>
+                  <span className="text-xs font-mono text-neutral-500">REF: APH-LET-2026-094</span>
+                  <h3 className="text-base font-bold text-neutral-900 mt-0.5">ICU Admission & Surgery Schedule</h3>
+                  <p className="text-xs text-neutral-600">Patient: Aarav S. (Pediatric Cardiothoracic)</p>
+                </div>
+                <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded">
+                  Active
+                </span>
+              </div>
+              <p className="text-xs text-neutral-700 bg-neutral-50 p-3 rounded-lg leading-relaxed">
+                "Official schedule confirmation for VSD closure procedure scheduled at Apollo Greams OT Suite 2 under Dr. C. Balasubramanian."
+              </p>
+              <div className="flex items-center justify-between text-xs text-neutral-500 pt-2 border-t border-neutral-100">
+                <span>Issued: 05 Oct 2026 · Signed by Clinical Social Work Desk</span>
+                <span className="font-semibold text-red-600">Apollo Seal Verified ✓</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* TAB: VERIFIED CASES                                            */}
+      {/* ============================================================== */}
+      {activeTab === 'verified-cases' && (
+        <div className="space-y-8">
+          <div>
+            <h1 className="cf-title text-neutral-900">Hospital Verified Cases</h1>
+            <p className="cf-body text-neutral-600 mt-1">
+              Patient cases whose clinical estimates and admission orders have been officially verified by Apollo Hospital staff.
+            </p>
+          </div>
+
+          <div className="cf-card overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-600 font-semibold">
+                  <tr>
+                    <th className="py-3 px-4">Case ID</th>
+                    <th className="py-3 px-4">Patient</th>
+                    <th className="py-3 px-4">Procedure</th>
+                    <th className="py-3 px-4 text-right">Hospital Estimate</th>
+                    <th className="py-3 px-4 text-right">Escrow Raised</th>
+                    <th className="py-3 px-4 text-center">Status</th>
+                    <th className="py-3 px-4 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-neutral-100">
+                  {hospitalVerified.map((c) => (
+                    <tr key={c.id} className="hover:bg-neutral-50/60 transition-colors">
+                      <td className="py-3.5 px-4 font-mono font-semibold text-neutral-900">{c.id}</td>
+                      <td className="py-3.5 px-4 font-semibold text-neutral-900">{c.patientName}</td>
+                      <td className="py-3.5 px-4 text-neutral-700">{c.treatment}</td>
+                      <td className="py-3.5 px-4 text-right font-semibold text-neutral-900">
+                        {formatINR(c.totalTreatmentCost)}
+                      </td>
+                      <td className="py-3.5 px-4 text-right text-emerald-700 font-medium">
+                        {formatINR(c.alreadyRaised)}
+                      </td>
+                      <td className="py-3.5 px-4 text-center">
+                        <StatusBadge status={c.status} size="sm" />
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedCaseForDetail(c)}
+                          className="cf-btn-secondary text-xs py-1 px-2.5 cursor-pointer"
+                        >
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* TAB: REJECTED CASES                                            */}
+      {/* ============================================================== */}
+      {activeTab === 'rejected-cases' && (
+        <div className="space-y-8">
+          <div>
+            <h1 className="cf-title text-neutral-900">Hospital Rejected Cases</h1>
+            <p className="cf-body text-neutral-600 mt-1">
+              Requests that could not be verified by hospital desk along with required documented reasons.
+            </p>
+          </div>
+
+          <div className="cf-card p-6 space-y-4">
+            {cases.filter((c) => c.status === 'Rejected').length === 0 ? (
+              <p className="text-xs text-neutral-500 italic p-4 bg-neutral-50 rounded-lg">
+                No cases currently rejected by hospital clinical desk.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {cases
+                  .filter((c) => c.status === 'Rejected')
+                  .map((c) => (
+                    <div key={c.id} className="p-4 bg-red-50/30 rounded-xl border border-red-200">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs text-neutral-700 font-bold">{c.id} · {c.patientName}</span>
+                        <StatusBadge status="Rejected" size="sm" />
+                      </div>
+                      <p className="text-xs text-red-700 mt-2 font-medium">
+                        Rejection Reason: Patient admission cancelled or diagnosis managed under government scheme.
+                      </p>
+                    </div>
+                  ))}
+              </div>
+            )}
           </div>
         </div>
       )}

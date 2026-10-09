@@ -870,120 +870,25 @@ export const PatientPortalView: React.FC<PatientPortalViewProps> = ({
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
-      {/* ============================================================== */}
-      {/* TAB: DASHBOARD                                                 */}
-      {/* ============================================================== */}
-      {activeTab === 'dashboard' && (
-        <div className="space-y-8">
-          <div>
-            <h1 className="cf-title text-neutral-900">{patientProfile.fullName} — Patient Case</h1>
-            <p className="cf-body text-neutral-600 mt-1">
-              Patient ID: <span className="font-mono font-bold text-neutral-800">{patientProfile.patientId}</span> · Track your medical assistance request, verification, and funding progress.
-            </p>
-          </div>
+      <h1 className="cf-title text-neutral-900">{patientProfile.fullName} — Patient Dashboard</h1>
+      <section className="cf-card"><h2 className="cf-section-heading">1. Patient Profile</h2></section>
+      <section className="cf-card"><h2 className="cf-section-heading">2. Medical Information</h2></section>
+      <section className="cf-card"><h2 className="cf-section-heading">3. Funding Requirement</h2></section>
+      <section className="cf-card">
+        <h2 className="cf-section-heading">4. Medical Document Upload</h2>
+        <div className="mt-4">
+          <input type="file" onChange={handleFileUpload} className="hidden" id="doc-upload" multiple />
+          <label htmlFor="doc-upload" className="cf-btn-primary cursor-pointer">
+            <UploadCloud className="w-4 h-4" /> Upload Documents
+          </label>
+        </div>
+      </section>
+      <section className="cf-card"><h2 className="cf-section-heading">5. Case Verification Status</h2></section>
+      <section className="cf-card"><h2 className="cf-section-heading">6. Funding Progress</h2></section>
+    </div>
+  );
+};
 
-          <TrustMessageBanner />
-
-          {/* Active Case Banner with 4-Step Stepper */}
-          {activeCase && (
-            <div className="cf-card p-6 border-red-200 bg-linear-to-b from-white to-red-50/20 space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-neutral-200">
-                <div>
-                  <span className="text-xs font-mono text-neutral-500">CF-{patientProfile.patientId.slice(0, 6).toUpperCase()}-2026</span>
-                  <h2 className="text-xl font-bold text-neutral-900 mt-0.5">
-                    {patientProfile.fullName} · {patientProfile.treatmentRequired}
-                  </h2>
-                  <p className="text-xs text-neutral-600 mt-0.5 flex items-center gap-1.5">
-                    <Building2 className="w-3.5 h-3.5 text-neutral-400" />
-                    <span>{patientProfile.hospitalName}</span>
-                  </p>
-                </div>
-                <StatusBadge status={activeCase.status} />
-              </div>
-
-              {/* 4-Step Stepper Component right at top */}
-              <div className="p-4 bg-white rounded-xl border border-neutral-200">
-                <FourStepReviewStepper
-                  currentStep={
-                    activeCase.status === 'Approved'
-                      ? 4
-                      : activeCase.status === 'Human Review' || activeCase.status === 'Hospital Verified'
-                      ? 3
-                      : activeCase.status === 'AI Check Completed'
-                      ? 2
-                      : 1
-                  }
-                  status={activeCase.status}
-                />
-              </div>
-
-              {/* Financial Metrics */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="p-3.5 bg-white rounded-xl border border-neutral-200">
-                  <span className="text-[11px] text-neutral-500 font-medium block">Hospital Estimate</span>
-                  <span className="text-lg font-bold text-neutral-900">
-                    {formatINR(activeCase.totalTreatmentCost)}
-                  </span>
-                </div>
-                <div className="p-3.5 bg-white rounded-xl border border-neutral-200">
-                  <span className="text-[11px] text-neutral-500 font-medium block">Approved Funding Gap</span>
-                  <span className="text-lg font-bold text-neutral-900">
-                    {formatINR(activeCase.verifiedFundingGap)}
-                  </span>
-                </div>
-                <div className="p-3.5 bg-white rounded-xl border border-neutral-200">
-                  <span className="text-[11px] text-emerald-700 font-medium block">Escrow Raised</span>
-                  <span className="text-lg font-bold text-emerald-700">
-                    {formatINR(activeCase.alreadyRaised)}
-                  </span>
-                </div>
-                <div className="p-3.5 bg-white rounded-xl border border-neutral-200">
-                  <span className="text-[11px] text-red-600 font-medium block">Remaining Gap</span>
-                  <span className="text-lg font-bold text-red-700">
-                    {formatINR(activeCase.stillNeeded)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => onSelectTab('verification')}
-                  className="cf-btn-primary cursor-pointer text-xs"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>View 4-Step Verification Status</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onSelectTab('funding-gap')}
-                  className="cf-btn-secondary cursor-pointer text-xs"
-                >
-                  <Calculator className="w-4 h-4" />
-                  <span>Funding Gap Breakdown</span>
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Quick Support & Submission Card */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="cf-card p-6 flex flex-col justify-between space-y-4">
-              <div>
-                <h3 className="cf-card-heading text-neutral-900">Need to Submit Another Case?</h3>
-                <p className="cf-body text-xs text-neutral-600 mt-1 leading-relaxed">
-                  Submit treatment estimates, diagnostic reports, and family contribution details. CareFund AI will check for completeness, followed by authorized hospital verification.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => onSelectTab('create')}
-                className="cf-btn-primary justify-center cursor-pointer text-xs"
-              >
-                <FilePlus2 className="w-4 h-4" />
-                <span>Create New Assistance Request</span>
-              </button>
-            </div>
 
             <div className="cf-card p-6 space-y-3">
               <h3 className="cf-card-heading text-neutral-900">Hospital Liaison Assistance</h3>
@@ -1679,6 +1584,238 @@ export const PatientPortalView: React.FC<PatientPortalViewProps> = ({
       )}
 
       {/* ============================================================== */}
+      {/* TAB: MEDICAL INFORMATION                                       */}
+      {/* ============================================================== */}
+      {activeTab === 'medical' && (
+        <div className="space-y-8 max-w-4xl">
+          <div>
+            <h1 className="cf-title text-neutral-900">Medical Information</h1>
+            <p className="cf-body text-neutral-600 mt-1">
+              Clinical condition, required treatment, and diagnosis details for {patientProfile.fullName}.
+            </p>
+          </div>
+
+          <TrustMessageBanner />
+
+          <div className="cf-card p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="p-4 bg-neutral-50 rounded-xl">
+                <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Primary Diagnosis</span>
+                <p className="text-lg font-bold text-neutral-900 mt-1">{patientProfile.diagnosis || 'Ventricular Septal Defect (Congenital Heart Disease)'}</p>
+              </div>
+
+              <div className="p-4 bg-neutral-50 rounded-xl">
+                <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Treatment Required</span>
+                <p className="text-lg font-bold text-neutral-900 mt-1">{patientProfile.treatmentRequired || 'Corrective Open Heart Surgery (VSD Closure)'}</p>
+              </div>
+
+              <div className="p-4 bg-neutral-50 rounded-xl">
+                <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Urgency Level</span>
+                <div className="mt-1">
+                  <span className="inline-flex px-2.5 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800">
+                    {patientProfile.treatmentUrgency || 'High (Within 14 Days)'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-4 bg-neutral-50 rounded-xl">
+                <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Surgery Required</span>
+                <p className="text-base font-semibold text-neutral-900 mt-1">
+                  {patientProfile.surgeryRequired ? 'Yes — Major Surgical Procedure' : 'No — Medical Management'}
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 bg-neutral-50 rounded-xl">
+              <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Clinical Condition Summary</span>
+              <p className="text-sm text-neutral-700 mt-1 leading-relaxed">
+                {patientProfile.conditionSummary || 'Patient was diagnosed with large perimembranous ventricular septal defect with left-to-right shunt and pulmonary arterial hypertension. Requires immediate surgical closure to avoid irreversible Eisenmenger physiology.'}
+              </p>
+            </div>
+
+            <div className="p-4 bg-neutral-50 rounded-xl">
+              <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Detailed Treatment Plan</span>
+              <p className="text-sm text-neutral-700 mt-1 leading-relaxed">
+                {patientProfile.treatmentDescription || 'Open heart surgery under cardiopulmonary bypass with Dacron patch closure of VSD, followed by 48 hours of ICU hemodynamic monitoring and 5 days of step-down ward care.'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* TAB: HOSPITAL DETAILS                                          */}
+      {/* ============================================================== */}
+      {activeTab === 'hospital-details' && (
+        <div className="space-y-8 max-w-4xl">
+          <div>
+            <h1 className="cf-title text-neutral-900">Hospital & Clinical Details</h1>
+            <p className="cf-body text-neutral-600 mt-1">
+              Verified clinical facility, treating physician, and admission schedule.
+            </p>
+          </div>
+
+          <TrustMessageBanner />
+
+          <div className="cf-card p-6 space-y-6">
+            <div className="flex items-start gap-4 p-4 bg-red-50/40 rounded-xl border border-red-100">
+              <Building2 className="w-8 h-8 text-red-600 shrink-0 mt-1" />
+              <div>
+                <h3 className="text-base font-bold text-neutral-900">{patientProfile.hospitalName || 'Apollo Hospitals, Greams Road, Chennai'}</h3>
+                <p className="text-xs text-neutral-600 mt-0.5">{patientProfile.hospitalAddress || '21 Greams Lane, Thousand Lights, Chennai, Tamil Nadu 600006'}</p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded text-[11px] font-semibold">
+                    ✓ Verified CareFund Partner Hospital
+                  </span>
+                  <span className="px-2 py-0.5 bg-neutral-100 text-neutral-700 rounded text-[11px] font-medium">
+                    Department: {patientProfile.department || 'Cardiothoracic Surgery'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4 bg-neutral-50 rounded-xl">
+                <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Treating Doctor / Surgeon</span>
+                <p className="text-base font-bold text-neutral-900 mt-1">{patientProfile.treatingDoctor || 'Dr. S. Murali'}</p>
+                <p className="text-xs text-neutral-500">{patientProfile.doctorDesignation || 'Senior Consultant Pediatric Cardiac Surgeon'}</p>
+              </div>
+
+              <div className="p-4 bg-neutral-50 rounded-xl">
+                <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Clinical Desk Contact</span>
+                <p className="text-base font-mono font-bold text-neutral-900 mt-1">{patientProfile.doctorContact || '+91 44 2829 0200'}</p>
+                <p className="text-xs text-neutral-500">Nodal Escrow Coordinator: Apollo Greams Desk</p>
+              </div>
+
+              <div className="p-4 bg-neutral-50 rounded-xl">
+                <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Scheduled Admission</span>
+                <p className="text-base font-semibold text-neutral-900 mt-1">{patientProfile.admissionDate || '12 Oct 2026'}</p>
+                <p className="text-xs text-neutral-500">Admitting Ward: Pediatric Cardiothoracic 4B</p>
+              </div>
+
+              <div className="p-4 bg-neutral-50 rounded-xl">
+                <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Expected Discharge</span>
+                <p className="text-base font-semibold text-neutral-900 mt-1">{patientProfile.expectedDischargeDate || '19 Oct 2026'}</p>
+                <p className="text-xs text-neutral-500">Subject to post-operative hemodynamic recovery</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* TAB: GOVERNMENT SCHEME                                         */}
+      {/* ============================================================== */}
+      {activeTab === 'government' && (
+        <div className="space-y-8 max-w-4xl">
+          <div>
+            <h1 className="cf-title text-neutral-900">Government Health Schemes</h1>
+            <p className="cf-body text-neutral-600 mt-1">
+              Public schemes and subsidies verified to prevent duplicate fundraising and reduce community requirement.
+            </p>
+          </div>
+
+          <TrustMessageBanner />
+
+          <div className="cf-card p-6 space-y-6">
+            <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200 flex items-start justify-between gap-4">
+              <div>
+                <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider">Active Government Scheme</span>
+                <h3 className="text-lg font-bold text-neutral-900 mt-0.5">
+                  {patientProfile.schemeName || 'Chief Minister Comprehensive Health Insurance Scheme (CMCHIS)'}
+                </h3>
+                <p className="text-xs text-neutral-600 mt-1">
+                  Card / Scheme Reference: <span className="font-mono font-bold">{patientProfile.schemeIdNumber || 'TN-CMCHIS-992384-2026'}</span>
+                </p>
+              </div>
+              <span className="px-3 py-1 bg-emerald-600 text-white rounded-full text-xs font-bold shrink-0">
+                Approved & Subtracted
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4 bg-neutral-50 rounded-xl">
+                <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Government Scheme Support</span>
+                <p className="text-xl font-bold text-neutral-900 mt-1">{formatINR(Number(patientProfile.govtAssistance) || 100000)}</p>
+                <p className="text-xs text-neutral-500 mt-0.5">Automatically subtracted from total treatment cost</p>
+              </div>
+
+              <div className="p-4 bg-neutral-50 rounded-xl">
+                <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Ayushman Bharat (PM-JAY) Status</span>
+                <p className="text-base font-semibold text-neutral-900 mt-1">Linked via State Co-Payment</p>
+                <p className="text-xs text-neutral-500 mt-0.5">Verified with hospital PM-JAY desk</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* TAB: CASE STATUS                                               */}
+      {/* ============================================================== */}
+      {activeTab === 'status' && (
+        <div className="space-y-8 max-w-4xl">
+          <div>
+            <h1 className="cf-title text-neutral-900">Case Status & Audit Milestones</h1>
+            <p className="cf-body text-neutral-600 mt-1">
+              End-to-end status of your medical assistance request through the 6-stage verification workflow.
+            </p>
+          </div>
+
+          <TrustMessageBanner />
+
+          {/* Stepper overview */}
+          <div className="cf-card p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="cf-card-heading text-neutral-900">Stage Progress</h3>
+              <StatusBadge status={activeCase.status} />
+            </div>
+
+            <FourStepReviewStepper
+              currentStep={
+                activeCase.status === 'Approved'
+                  ? 4
+                  : activeCase.status === 'Human Review' || activeCase.status === 'Hospital Verified'
+                  ? 3
+                  : 2
+              }
+              status={activeCase.status}
+            />
+          </div>
+
+          {/* Detailed 6-Stage Timeline */}
+          <div className="cf-card p-6 space-y-4">
+            <h3 className="cf-card-heading text-neutral-900">Workflow Stages</h3>
+            <div className="space-y-3">
+              {[
+                { stage: '1. Information Submitted', desc: 'Patient and family provided clinical diagnosis and estimated costs.', status: 'Completed', date: '03 Oct 2026' },
+                { stage: '2. Documents Submitted', desc: 'Medical reports, hospital bills, and identity cards uploaded.', status: 'Completed', date: '04 Oct 2026' },
+                { stage: '3. Hospital Verification', desc: 'Apollo Hospitals Clinical Desk confirmed admission & itemized estimate.', status: 'Completed', date: '04 Oct 2026' },
+                { stage: '4. Human Review Desk', desc: 'Authorized medical auditor Dr. K. Swaminathan verified funding gap.', status: 'Completed', date: '05 Oct 2026' },
+                { stage: '5. Final Decision', desc: 'Approved for community escrow crowdfunding.', status: activeCase.status === 'Approved' ? 'Completed' : 'In Progress', date: '05 Oct 2026' },
+                { stage: '6. Funding Active', desc: 'Verified community donations paid directly to hospital escrow.', status: activeCase.status === 'Approved' ? 'Active' : 'Pending', date: 'Live' },
+              ].map((item, i) => (
+                <div key={i} className="p-4 bg-neutral-50 rounded-xl border border-neutral-200 flex items-center justify-between gap-4">
+                  <div>
+                    <h4 className="text-sm font-bold text-neutral-900">{item.stage}</h4>
+                    <p className="text-xs text-neutral-600 mt-0.5">{item.desc}</p>
+                    <span className="text-[11px] font-mono text-neutral-400 mt-1 block">{item.date}</span>
+                  </div>
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                    item.status === 'Completed' || item.status === 'Active'
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : 'bg-amber-100 text-amber-800'
+                  }`}>
+                    {item.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
       {/* TAB: NOTIFICATIONS                                             */}
       {/* ============================================================== */}
       {activeTab === 'notifications' && (
@@ -1866,3 +2003,4 @@ export const PatientPortalView: React.FC<PatientPortalViewProps> = ({
     </div>
   );
 };
+

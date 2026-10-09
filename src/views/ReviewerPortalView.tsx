@@ -409,9 +409,9 @@ export const ReviewerPortalView: React.FC<ReviewerPortalViewProps> = ({
       )}
 
       {/* ============================================================== */}
-      {/* TAB: CASES TO REVIEW                                           */}
+      {/* TAB: CASES TO REVIEW / ALL CASES                               */}
       {/* ============================================================== */}
-      {activeTab === 'cases-to-review' && (
+      {(activeTab === 'cases-to-review' || activeTab === 'all-cases') && (
         <div className="space-y-8">
           <div>
             <h1 className="cf-title text-neutral-900">Cases Awaiting Human Review</h1>
@@ -555,9 +555,9 @@ export const ReviewerPortalView: React.FC<ReviewerPortalViewProps> = ({
       )}
 
       {/* ============================================================== */}
-      {/* TAB: AI SCREENING RESULTS                                      */}
+      {/* TAB: AI SCREENING RESULTS / DOCUMENT REVIEW                    */}
       {/* ============================================================== */}
-      {activeTab === 'ai-screening' && (
+      {(activeTab === 'ai-screening' || activeTab === 'document-review') && (
         <div className="space-y-8">
           <div>
             <h1 className="cf-title text-neutral-900">AI Screening Results & Discrepancy Review</h1>
@@ -653,9 +653,9 @@ export const ReviewerPortalView: React.FC<ReviewerPortalViewProps> = ({
       )}
 
       {/* ============================================================== */}
-      {/* TAB: HUMAN REVIEW & 4-STEP DESK                                */}
+      {/* TAB: HUMAN REVIEW & HOSPITAL VERIFICATION                      */}
       {/* ============================================================== */}
-      {activeTab === 'human-review' && (() => {
+      {(activeTab === 'human-review' || activeTab === 'hospital-verification') && (() => {
         const inspectedCase = cases.find((c) => c.id === humanReviewCaseId) || cases[0];
 
         return (
@@ -880,9 +880,9 @@ export const ReviewerPortalView: React.FC<ReviewerPortalViewProps> = ({
       })()}
 
       {/* ============================================================== */}
-      {/* TAB: FINAL DECISION CONSOLE                                    */}
+      {/* TAB: FINAL DECISION CONSOLE / PENDING REVIEW                   */}
       {/* ============================================================== */}
-      {activeTab === 'final-decisions' && (
+      {(activeTab === 'final-decisions' || activeTab === 'pending-review') && (
         <div className="space-y-8">
           <div>
             <h1 className="cf-title text-neutral-900">Final Decision Console</h1>
@@ -986,6 +986,135 @@ export const ReviewerPortalView: React.FC<ReviewerPortalViewProps> = ({
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* TAB: APPROVED CASES                                            */}
+      {/* ============================================================== */}
+      {activeTab === 'approved-cases' && (
+        <div className="space-y-8">
+          <div>
+            <h1 className="cf-title text-neutral-900">Approved Cases Console</h1>
+            <p className="cf-body text-neutral-600 mt-1">
+              Patient assistance requests authorized by human reviewers for community escrow crowdfunding.
+            </p>
+          </div>
+
+          <TrustMessageBanner />
+
+          <div className="cf-card overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-neutral-50 border-b border-neutral-200 text-neutral-600 font-semibold">
+                  <tr>
+                    <th className="py-3 px-4">Case ID</th>
+                    <th className="py-3 px-4">Patient</th>
+                    <th className="py-3 px-4">Hospital & Procedure</th>
+                    <th className="py-3 px-4 text-right">Audited Gap</th>
+                    <th className="py-3 px-4 text-center">Status</th>
+                    <th className="py-3 px-4 text-right">Auditor</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-neutral-100">
+                  {cases.filter((c) => c.status === 'Approved').map((c) => (
+                    <tr key={c.id} className="hover:bg-neutral-50/60 transition-colors">
+                      <td className="py-3.5 px-4 font-mono font-semibold text-neutral-900">{c.id}</td>
+                      <td className="py-3.5 px-4 font-semibold text-neutral-900">{c.patientName}</td>
+                      <td className="py-3.5 px-4 text-neutral-700">{c.treatment} · {c.hospital}</td>
+                      <td className="py-3.5 px-4 text-right font-bold text-emerald-700">
+                        {formatINR(c.verifiedFundingGap)}
+                      </td>
+                      <td className="py-3.5 px-4 text-center">
+                        <StatusBadge status="Approved" size="sm" />
+                      </td>
+                      <td className="py-3.5 px-4 text-right text-neutral-600 font-mono text-[11px]">
+                        Dr. K. Swaminathan (MD)
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* TAB: REJECTED CASES                                            */}
+      {/* ============================================================== */}
+      {activeTab === 'rejected-cases' && (
+        <div className="space-y-8">
+          <div>
+            <h1 className="cf-title text-neutral-900">Rejected Cases Console</h1>
+            <p className="cf-body text-neutral-600 mt-1">
+              Cases rejected during clinical documentation audit with documented human justification.
+            </p>
+          </div>
+
+          <TrustMessageBanner />
+
+          <div className="cf-card p-6 space-y-4">
+            {cases.filter((c) => c.status === 'Rejected').length === 0 ? (
+              <p className="text-xs text-neutral-500 italic p-4 bg-neutral-50 rounded-lg">
+                No cases currently marked as rejected in the audit queue.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {cases
+                  .filter((c) => c.status === 'Rejected')
+                  .map((c) => (
+                    <div key={c.id} className="p-4 bg-red-50/30 rounded-xl border border-red-200">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs text-neutral-700 font-bold">{c.id} · {c.patientName}</span>
+                        <StatusBadge status="Rejected" size="sm" />
+                      </div>
+                      <p className="text-xs text-red-800 mt-2 font-medium">
+                        Auditor Reason: Inconsistent tariff codes or duplicate coverage under State Government Scheme.
+                      </p>
+                      <span className="text-[11px] text-neutral-400 mt-1 block">Reviewed by Dr. K. Swaminathan, MD</span>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* TAB: MORE INFORMATION REQUESTS                                 */}
+      {/* ============================================================== */}
+      {activeTab === 'more-information' && (
+        <div className="space-y-8">
+          <div>
+            <h1 className="cf-title text-neutral-900">Information Queries & Clarifications</h1>
+            <p className="cf-body text-neutral-600 mt-1">
+              Active queries sent to patients and hospital desk coordinators requesting clarification or updated estimates.
+            </p>
+          </div>
+
+          <TrustMessageBanner />
+
+          <div className="space-y-4">
+            <div className="cf-card p-6 border-l-4 border-l-amber-500 space-y-3">
+              <div className="flex items-start justify-between">
+                <div>
+                  <span className="font-mono text-xs text-neutral-500">QUERY-2026-401 · Case CF-CHN-2026-00124</span>
+                  <h3 className="text-sm font-bold text-neutral-900 mt-0.5">Apollo Hospitals Greams Desk — ICU Estimate Breakdown</h3>
+                </div>
+                <span className="px-2 py-0.5 bg-amber-100 text-amber-800 text-[11px] font-bold rounded">
+                  Pending Hospital Response
+                </span>
+              </div>
+              <p className="text-xs text-neutral-700 bg-neutral-50 p-3 rounded-lg leading-relaxed">
+                "Please upload the itemized breakdown of ICU nursing consumables vs. surgeon honorarium to verify PM-JAY exclusion coverage."
+              </p>
+              <div className="text-[11px] text-neutral-400 flex items-center justify-between pt-1">
+                <span>Sent: 04 Oct 2026, 05:20 PM by Reviewer Desk</span>
+                <span className="text-neutral-600 font-medium">Liaison Coordinator: Dr. C. Balasubramanian</span>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

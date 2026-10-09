@@ -335,12 +335,12 @@ export const DonorPortalView: React.FC<DonorPortalViewProps> = ({
       )}
 
       {/* ============================================================== */}
-      {/* TAB: BROWSE VERIFIED CASES                                      */}
+      {/* TAB: BROWSE VERIFIED CASES / FIND PATIENTS                     */}
       {/* ============================================================== */}
-      {activeTab === 'cases' && (
+      {(activeTab === 'cases' || activeTab === 'find-patients') && (
         <div className="space-y-8">
           <div>
-            <h1 className="cf-title text-neutral-900">Browse Verified Cases</h1>
+            <h1 className="cf-title text-neutral-900">Find Patients & Verified Cases</h1>
             <p className="cf-body text-neutral-600 mt-1">
               Select a medically verified case to review documentation and donate directly to hospital escrow.
             </p>
@@ -491,13 +491,13 @@ export const DonorPortalView: React.FC<DonorPortalViewProps> = ({
       )}
 
       {/* ============================================================== */}
-      {/* TAB: MY DONATIONS                                              */}
+      {/* TAB: MY DONATIONS / DONATION HISTORY                           */}
       {/* ============================================================== */}
-      {activeTab === 'my-donations' && (
+      {(activeTab === 'my-donations' || activeTab === 'donation-history') && (
         <div className="space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="cf-title text-neutral-900">My Donations</h1>
+              <h1 className="cf-title text-neutral-900">My Donations & Donation History</h1>
               <p className="cf-body text-neutral-600 mt-1">
                 Your direct hospital escrow contributions with verified tax exemption receipts.
               </p>
