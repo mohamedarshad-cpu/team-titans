@@ -60,6 +60,7 @@ export const PatientPortalView: React.FC<PatientPortalViewProps> = ({
   const [uploadSuccess, setUploadSuccess] = useState<string | null>(null);
   const [previewDoc, setPreviewDoc] = useState<UploadedMedicalDoc | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [selectedDocCategory, setSelectedDocCategory] = useState<string>('Medical Reports');
 
   const [patientProfile, setPatientProfile] = useState<PatientCaseProfile | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
@@ -101,19 +102,19 @@ export const PatientPortalView: React.FC<PatientPortalViewProps> = ({
   const [admissionDate, setAdmissionDate] = useState('');
   const [expectedDischargeDate, setExpectedDischargeDate] = useState('');
 
-  const [totalCostInput, setTotalCostInput] = useState('500000');
-  const [familyContributionInput, setFamilyContributionInput] = useState('50000');
-  const [insuranceInput, setInsuranceInput] = useState('100000');
-  const [govtAssistanceInput, setGovtAssistanceInput] = useState('100000');
+  const [totalCostInput, setTotalCostInput] = useState('0');
+  const [familyContributionInput, setFamilyContributionInput] = useState('0');
+  const [insuranceInput, setInsuranceInput] = useState('0');
+  const [govtAssistanceInput, setGovtAssistanceInput] = useState('0');
   const [otherAssistanceInput, setOtherAssistanceInput] = useState('0');
 
-  const [hasGovernmentScheme, setHasGovernmentScheme] = useState(true);
-  const [schemeName, setSchemeName] = useState('CMCHIS');
+  const [hasGovernmentScheme, setHasGovernmentScheme] = useState(false);
+  const [schemeName, setSchemeName] = useState('');
   const [beneficiaryId, setBeneficiaryId] = useState('');
-  const [approvedAmount, setApprovedAmount] = useState('100000');
+  const [approvedAmount, setApprovedAmount] = useState('0');
   const [applicationStatus, setApplicationStatus] = useState('Submitted');
   const [assistanceReceived, setAssistanceReceived] = useState('0');
-  const [remainingAssistance, setRemainingAssistance] = useState('100000');
+  const [remainingAssistance, setRemainingAssistance] = useState('0');
 
   useEffect(() => {
     Promise.all([
@@ -345,11 +346,11 @@ export const PatientPortalView: React.FC<PatientPortalViewProps> = ({
   >('Cardiac');
   const [hospital, setHospital] = useState('Apollo Hospitals, Greams Road, Chennai');
   const [diagnosisSummary, setDiagnosisSummary] = useState('');
-  const [totalCost, setTotalCost] = useState('500000');
-  const [insurance, setInsurance] = useState('150000');
-  const [govtSupport, setGovtSupport] = useState('100000');
-  const [hospitalAid, setHospitalAid] = useState('30000');
-  const [familySavings, setFamilySavings] = useState('50000');
+  const [totalCost, setTotalCost] = useState('0');
+  const [insurance, setInsurance] = useState('0');
+  const [govtSupport, setGovtSupport] = useState('0');
+  const [hospitalAid, setHospitalAid] = useState('0');
+  const [familySavings, setFamilySavings] = useState('0');
   const [fileName, setFileName] = useState('');
   const [submittedCaseSuccess, setSubmittedCaseSuccess] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -764,7 +765,22 @@ export const PatientPortalView: React.FC<PatientPortalViewProps> = ({
 
             {onboardingStep === 4 && (
               <div className="space-y-4 animate-in fade-in">
-                <h3 className="text-base font-bold text-neutral-900 border-b pb-2">4. Treatment Cost & Funding Requirement</h3>
+                <div className="flex items-center justify-between border-b pb-2">
+                  <h3 className="text-base font-bold text-neutral-900">4. Treatment Cost & Funding Requirement</h3>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTotalCostInput('0');
+                      setFamilyContributionInput('0');
+                      setInsuranceInput('0');
+                      setGovtAssistanceInput('0');
+                      setOtherAssistanceInput('0');
+                    }}
+                    className="text-xs px-2.5 py-1 rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-semibold cursor-pointer transition-colors"
+                  >
+                    Reset all to ₹0
+                  </button>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-neutral-700 mb-1">Total Treatment Cost (₹)</label>
@@ -870,10 +886,534 @@ export const PatientPortalView: React.FC<PatientPortalViewProps> = ({
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
-      {/* All content wrapped here */}
-    </div>
-  );
-};
+      {/* ============================================================== */}
+      {/* TAB: DASHBOARD (6 SECTIONS)                                    */}
+      {/* ============================================================== */}
+      {activeTab === 'dashboard' && (
+        <div className="space-y-8">
+          <div>
+            <h1 className="cf-title text-neutral-900">{patientProfile.fullName} — Patient Dashboard</h1>
+            <p className="cf-body text-neutral-600 mt-1">
+              Patient ID: <span className="font-mono font-bold text-neutral-800">{patientProfile.patientId}</span> · Case: <span className="font-mono font-semibold text-neutral-700">CF-{patientProfile.patientId.slice(0, 6).toUpperCase()}-2026</span>
+            </p>
+          </div>
+
+          <TrustMessageBanner />
+
+          {/* Section 1: Patient Profile */}
+          <section className="cf-card p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-red-50 text-red-700 flex items-center justify-center font-bold text-sm">
+                  1
+                </div>
+                <div>
+                  <h3 className="cf-card-heading text-neutral-900">Patient Profile</h3>
+                  <p className="cf-secondary text-xs">Personal and contact details linked to this case</p>
+                </div>
+              </div>
+              <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-neutral-100 text-neutral-700">
+                Patient Case #{patientProfile.patientId.slice(0, 8)}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs">
+              <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-500 block text-[11px] font-medium">Full Name</span>
+                <span className="text-sm font-bold text-neutral-900 mt-0.5 block">{patientProfile.fullName}</span>
+              </div>
+              <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-500 block text-[11px] font-medium">Gender & DOB</span>
+                <span className="text-sm font-semibold text-neutral-900 mt-0.5 block">
+                  {patientProfile.gender} · {patientProfile.dob || 'Not provided'}
+                </span>
+              </div>
+              <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-500 block text-[11px] font-medium">Phone & Email</span>
+                <span className="text-sm font-semibold text-neutral-900 mt-0.5 block truncate">
+                  {patientProfile.phoneNumber || 'Not provided'}
+                </span>
+                <span className="text-neutral-500 text-[11px] truncate block">{patientProfile.email || '—'}</span>
+              </div>
+              <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-500 block text-[11px] font-medium">Location</span>
+                <span className="text-sm font-semibold text-neutral-900 mt-0.5 block">
+                  {patientProfile.city ? `${patientProfile.city}, ${patientProfile.state}` : patientProfile.state || 'Tamil Nadu'}
+                </span>
+                {patientProfile.pincode && <span className="text-neutral-500 text-[11px]">PIN: {patientProfile.pincode}</span>}
+              </div>
+              <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200 sm:col-span-2">
+                <span className="text-neutral-500 block text-[11px] font-medium">Emergency Contact</span>
+                <span className="text-sm font-semibold text-neutral-900 mt-0.5 block">
+                  {patientProfile.emergencyContactName ? `${patientProfile.emergencyContactName} (${patientProfile.emergencyContactRelationship || 'Family'})` : 'Not provided yet'}
+                </span>
+                {patientProfile.emergencyContactPhone && (
+                  <span className="text-neutral-600 text-[11px] font-mono">{patientProfile.emergencyContactPhone}</span>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {/* Section 2: Medical Information */}
+          <section className="cf-card p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-red-50 text-red-700 flex items-center justify-center font-bold text-sm">
+                  2
+                </div>
+                <div>
+                  <h3 className="cf-card-heading text-neutral-900">Medical Information</h3>
+                  <p className="cf-secondary text-xs">Diagnosis, treating facility, and clinical urgency</p>
+                </div>
+              </div>
+              <span className={`px-2.5 py-1 text-xs font-bold rounded-full ${
+                patientProfile.treatmentUrgency?.includes('Critical') || patientProfile.treatmentUrgency === 'High'
+                  ? 'bg-red-100 text-red-800'
+                  : 'bg-amber-100 text-amber-800'
+              }`}>
+                Urgency: {patientProfile.treatmentUrgency || 'High'}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-500 block text-[11px] font-medium">Condition / Diagnosis</span>
+                <span className="text-sm font-bold text-neutral-900 mt-0.5 block">
+                  {patientProfile.diagnosis || 'Diagnosis recorded on case file'}
+                </span>
+              </div>
+              <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-500 block text-[11px] font-medium">Treatment / Procedure Required</span>
+                <span className="text-sm font-bold text-neutral-900 mt-0.5 block">
+                  {patientProfile.treatmentRequired || 'Required clinical treatment'}
+                </span>
+              </div>
+              <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-500 block text-[11px] font-medium">Hospital & Department</span>
+                <span className="text-sm font-semibold text-neutral-900 mt-0.5 block flex items-center gap-1.5">
+                  <Building2 className="w-3.5 h-3.5 text-neutral-400" />
+                  {patientProfile.hospitalName || 'Network Hospital'}
+                </span>
+                <span className="text-neutral-500 text-[11px]">{patientProfile.department || 'Clinical Department'}</span>
+              </div>
+              <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-500 block text-[11px] font-medium">Treating Doctor & Status</span>
+                <span className="text-sm font-semibold text-neutral-900 mt-0.5 block">
+                  {patientProfile.treatingDoctor ? `${patientProfile.treatingDoctor} (${patientProfile.doctorDesignation || 'Consultant'})` : 'Attending Consultant'}
+                </span>
+                <span className="text-neutral-500 text-[11px]">Surgery Required: {patientProfile.surgeryRequired ? 'Yes' : 'No'}</span>
+              </div>
+            </div>
+
+            {patientProfile.conditionSummary && (
+              <div className="p-3.5 bg-neutral-50 rounded-xl border border-neutral-200 text-xs">
+                <span className="text-neutral-500 block text-[11px] font-medium mb-1">Clinical Summary</span>
+                <p className="text-neutral-700 leading-relaxed">{patientProfile.conditionSummary}</p>
+              </div>
+            )}
+          </section>
+
+          {/* Section 3: Funding Requirement */}
+          <section className="cf-card p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-red-50 text-red-700 flex items-center justify-center font-bold text-sm">
+                  3
+                </div>
+                <div>
+                  <h3 className="cf-card-heading text-neutral-900">Funding Requirement</h3>
+                  <p className="cf-secondary text-xs">Mathematical breakdown of treatment costs and net gap</p>
+                </div>
+              </div>
+              <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800">
+                Verified Gap Formula
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+              <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-500 block text-[11px]">Total Treatment Cost</span>
+                <span className="text-base font-bold text-neutral-900 mt-0.5 block">
+                  {formatINR(patientProfile.totalTreatmentCost ?? activeCase?.totalTreatmentCost ?? 0)}
+                </span>
+              </div>
+              <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-500 block text-[11px]">(-) Family Contribution</span>
+                <span className="text-base font-bold text-neutral-700 mt-0.5 block">
+                  - {formatINR(patientProfile.familyContribution ?? 0)}
+                </span>
+              </div>
+              <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-500 block text-[11px]">(-) Insurance Coverage</span>
+                <span className="text-base font-bold text-neutral-700 mt-0.5 block">
+                  - {formatINR(patientProfile.insuranceCoverage ?? 0)}
+                </span>
+              </div>
+              <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-500 block text-[11px]">(-) Govt Scheme Support</span>
+                <span className="text-base font-bold text-neutral-700 mt-0.5 block">
+                  - {formatINR(patientProfile.governmentAssistance ?? 0)}
+                </span>
+              </div>
+            </div>
+
+            <div className="p-4 bg-linear-to-r from-red-50 to-white border border-red-200 rounded-xl flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-red-800 block">
+                  CareFund Donation Required (Net Funding Gap)
+                </span>
+                <span className="text-xs text-neutral-600">
+                  Total Cost − (Family + Insurance + Govt Schemes + Concessions)
+                </span>
+              </div>
+              <div className="text-right">
+                <span className="text-2xl font-black text-red-700 font-mono">
+                  ₹ {formatINR(patientProfile.carefundFundingRequired ?? activeCase?.verifiedFundingGap ?? calculatedFundingRequired ?? 0)}
+                </span>
+              </div>
+            </div>
+          </section>
+
+          {/* Section 4: Medical Document Upload */}
+          <section className="cf-card p-6 space-y-5 border-neutral-200">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-red-50 text-red-700 flex items-center justify-center font-bold text-sm">
+                  4
+                </div>
+                <div>
+                  <h3 className="cf-card-heading text-neutral-900">Medical Document Upload</h3>
+                  <p className="cf-secondary text-xs">
+                    Upload clinical records, estimates, prescriptions, and scheme proofs (PDF, JPG, JPEG, PNG · max 10MB)
+                  </p>
+                </div>
+              </div>
+              <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-neutral-100 text-neutral-700">
+                {patientDocs.length} Document{patientDocs.length === 1 ? '' : 's'} on File
+              </span>
+            </div>
+
+            {uploadError && (
+              <div className="p-3.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+                <span>{uploadError}</span>
+              </div>
+            )}
+
+            {uploadSuccess && (
+              <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>{uploadSuccess}</span>
+              </div>
+            )}
+
+            {/* Document upload form controls */}
+            <div className="p-4 bg-neutral-50/70 border border-neutral-200 rounded-xl space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <div className="sm:col-span-2">
+                  <label className="cf-label block mb-1 font-semibold text-neutral-800">Select Document Category *</label>
+                  <select
+                    value={selectedDocCategory}
+                    onChange={(e) => setSelectedDocCategory(e.target.value)}
+                    className="w-full py-2.5 px-3.5 text-xs rounded-xl border border-neutral-300 focus:outline-none focus:border-red-600 bg-white"
+                  >
+                    <option value="Medical Reports">Medical Reports</option>
+                    <option value="Doctor's Prescription">Doctor's Prescription</option>
+                    <option value="Treatment Recommendation">Treatment Recommendation</option>
+                    <option value="Hospital Cost Estimate">Hospital Cost Estimate</option>
+                    <option value="Medical Bills">Medical Bills</option>
+                    <option value="Insurance Documents">Insurance Documents</option>
+                    <option value="Government Scheme Documents">Government Scheme Documents</option>
+                    <option value="Other Supporting Documents">Other Supporting Documents</option>
+                  </select>
+                </div>
+
+                <div className="flex items-end">
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setUploadError(null);
+                      setUploadSuccess(null);
+                      const ext = file.name.split('.').pop()?.toLowerCase() || '';
+                      const allowed = ['pdf', 'jpg', 'jpeg', 'png'];
+                      if (!allowed.includes(ext)) {
+                        setUploadError('Invalid format. Please upload PDF, JPG, JPEG, or PNG files.');
+                        return;
+                      }
+                      if (file.size > 10 * 1024 * 1024) {
+                        setUploadError('File exceeds 10 MB limit. Please select a smaller file.');
+                        return;
+                      }
+                      setIsUploading(true);
+                      const reader = new FileReader();
+                      reader.onload = async (evt) => {
+                        const dataUrl = evt.target?.result as string;
+                        const sizeStr = file.size > 1024 * 1024
+                          ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
+                          : `${Math.round(file.size / 1024)} KB`;
+                        const now = new Date();
+                        const dateStr = now.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) + ' at ' + now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+                        const newRecord: PatientDocumentRecord = {
+                          id: `DOC-${Date.now()}-${Math.floor(Math.random() * 10000)}`,
+                          patientId,
+                          name: file.name,
+                          fileType: ext.toUpperCase(),
+                          size: sizeStr,
+                          uploadDate: dateStr,
+                          timestamp: Date.now(),
+                          dataUrl,
+                          verificationStatus: 'Pending Review',
+                          uploadedBy: currentUser?.displayName || currentUser?.email || 'Patient / Family',
+                          status: 'Uploaded',
+                          category: selectedDocCategory,
+                          description: `${selectedDocCategory} uploaded by patient`,
+                        };
+                        try {
+                          await savePatientDocument(newRecord);
+                          setPatientDocs((prev) => [newRecord, ...prev.filter(d => d.id !== newRecord.id)]);
+                          setUploadSuccess(`Document "${file.name}" uploaded successfully under "${selectedDocCategory}".`);
+                          setIsUploading(false);
+                          if (fileInputRef.current) fileInputRef.current.value = '';
+                          setTimeout(() => setUploadSuccess(null), 4000);
+                        } catch (err) {
+                          setIsUploading(false);
+                          setUploadError('Document upload failed. Please try again.');
+                        }
+                      };
+                      reader.onerror = () => {
+                        setIsUploading(false);
+                        setUploadError('Failed to read file from your device.');
+                      };
+                      reader.readAsDataURL(file);
+                    }}
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                    className="w-full h-[42px] rounded-xl bg-red-600 hover:bg-red-700 active:bg-red-800 text-white text-xs font-bold shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {isUploading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Uploading...</span>
+                      </>
+                    ) : (
+                      <>
+                        <UploadCloud className="w-4 h-4" />
+                        <span>Upload Documents</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+              <p className="text-[11px] text-neutral-500">
+                Click <strong>Upload Documents</strong> to browse files from your computer or phone. Supported formats: PDF, JPG, JPEG, PNG up to 10 MB.
+              </p>
+            </div>
+
+            {/* List of uploaded documents */}
+            {isLoadingDocs ? (
+              <div className="p-6 text-center text-xs text-neutral-500 flex items-center justify-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin text-red-600" />
+                <span>Loading your uploaded documents...</span>
+              </div>
+            ) : patientDocs.length === 0 ? (
+              <div className="p-6 border border-dashed border-neutral-300 rounded-xl text-center space-y-2 bg-neutral-50/50">
+                <FileText className="w-8 h-8 text-neutral-400 mx-auto" />
+                <p className="text-xs font-semibold text-neutral-800">No medical documents uploaded yet</p>
+                <p className="text-[11px] text-neutral-500">
+                  Upload your hospital estimate, doctor prescription, and clinical reports to enable verification.
+                </p>
+              </div>
+            ) : (
+              <div className="divide-y divide-neutral-100 border border-neutral-200 rounded-xl overflow-hidden">
+                {patientDocs.map((doc) => (
+                  <div key={doc.id} className="p-3.5 sm:p-4 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-start gap-3 min-w-0">
+                      <div className="w-9 h-9 rounded-lg bg-red-50 text-red-700 border border-red-200 flex items-center justify-center shrink-0 mt-0.5">
+                        <FileText className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-semibold text-xs text-neutral-900 truncate" title={doc.name}>
+                            {doc.name}
+                          </span>
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-neutral-100 text-neutral-700 border border-neutral-200 uppercase">
+                            {doc.fileType}
+                          </span>
+                          <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-50 text-red-800 border border-red-100">
+                            {doc.category}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-neutral-500 mt-0.5">
+                          {doc.size} · Uploaded: {doc.uploadDate} · Status: <span className="text-neutral-700 font-medium">{doc.status}</span>
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-neutral-100">
+                      <span className={`px-2 py-0.5 rounded text-[11px] font-semibold border ${
+                        doc.verificationStatus === 'Verified' || doc.verificationStatus.includes('Verified')
+                          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                          : doc.verificationStatus === 'Rejected'
+                          ? 'bg-red-50 text-red-800 border-red-200'
+                          : 'bg-amber-50 text-amber-800 border-amber-200'
+                      }`}>
+                        {doc.verificationStatus}
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={() => setPreviewDoc({
+                          id: doc.id,
+                          category: doc.category,
+                          name: doc.name,
+                          fileType: doc.fileType,
+                          size: doc.size,
+                          uploadDate: doc.uploadDate,
+                          dataUrl: doc.dataUrl,
+                          status: (doc.status as 'Uploaded' | 'Pending') || 'Uploaded',
+                          isRequired: false,
+                          description: doc.description,
+                        })}
+                        className="px-2.5 py-1 rounded-lg bg-white border border-neutral-200 text-xs font-semibold text-neutral-800 hover:bg-neutral-50 cursor-pointer flex items-center gap-1"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>View</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = patientDocs.filter(d => d.id !== doc.id);
+                          setPatientDocs(updated);
+                          localStorage.setItem(`carefund_patient_docs_${patientId}`, JSON.stringify(updated));
+                        }}
+                        className="px-2.5 py-1 rounded-lg bg-neutral-50 hover:bg-red-50 hover:text-red-700 border border-neutral-200 text-xs font-semibold text-neutral-600 cursor-pointer transition-colors"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+
+          {/* Section 5: Case Verification Status */}
+          <section className="cf-card p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-red-50 text-red-700 flex items-center justify-center font-bold text-sm">
+                  5
+                </div>
+                <div>
+                  <h3 className="cf-card-heading text-neutral-900">Case Verification Status</h3>
+                  <p className="cf-secondary text-xs">Live 4-step clinical review and audit milestone tracker</p>
+                </div>
+              </div>
+              <StatusBadge status={activeCase?.status || 'Information Submitted'} />
+            </div>
+
+            <div className="p-4 bg-white rounded-xl border border-neutral-200">
+              <FourStepReviewStepper
+                currentStep={
+                  activeCase?.status === 'Approved'
+                    ? 4
+                    : activeCase?.status === 'Human Review' || activeCase?.status === 'Hospital Verified'
+                    ? 3
+                    : activeCase?.status === 'AI Check Completed'
+                    ? 2
+                    : 1
+                }
+                status={activeCase?.status || 'Information Submitted'}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-500 block text-[11px]">Hospital Desk Review</span>
+                <span className="font-semibold text-neutral-900 mt-0.5 block">
+                  {patientProfile.hospitalVerificationStatus || 'Pending Hospital Verification'}
+                </span>
+              </div>
+              <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-500 block text-[11px]">Human Reviewer Desk</span>
+                <span className="font-semibold text-neutral-900 mt-0.5 block">
+                  {activeCase?.humanReviewState || 'Pending Reviewer Assignment'}
+                </span>
+              </div>
+              <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                <span className="text-neutral-500 block text-[11px]">Final Decision</span>
+                <span className="font-semibold text-neutral-900 mt-0.5 block">
+                  {activeCase?.finalDecisionState || 'Not yet decided'}
+                </span>
+              </div>
+            </div>
+          </section>
+
+          {/* Section 6: Funding Progress */}
+          <section className="cf-card p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-red-50 text-red-700 flex items-center justify-center font-bold text-sm">
+                  6
+                </div>
+                <div>
+                  <h3 className="cf-card-heading text-neutral-900">Funding Progress</h3>
+                  <p className="cf-secondary text-xs">Direct hospital escrow collection and disbursement progress</p>
+                </div>
+              </div>
+              <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800">
+                Axis Bank Escrow Verified
+              </span>
+            </div>
+
+            {/* Progress bar calculation */}
+            {(() => {
+              const gap = patientProfile.carefundFundingRequired || activeCase?.verifiedFundingGap || calculatedFundingRequired || 1;
+              const raised = activeCase?.alreadyRaised || 0;
+              const pct = Math.min(100, Math.round((raised / gap) * 100));
+              return (
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center text-xs">
+                    <span className="text-neutral-600 font-medium">Community Crowdfunding Progress</span>
+                    <span className="font-bold text-neutral-900 font-mono">{pct}% Funded</span>
+                  </div>
+                  <div className="w-full bg-neutral-200 h-3 rounded-full overflow-hidden">
+                    <div
+                      className="bg-emerald-600 h-full rounded-full transition-all duration-500"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  <div className="grid grid-cols-3 gap-3 pt-2 text-xs">
+                    <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                      <span className="text-neutral-500 block text-[11px]">Total Funding Goal</span>
+                      <span className="text-sm font-bold text-neutral-900 mt-0.5 block">{formatINR(gap)}</span>
+                    </div>
+                    <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                      <span className="text-emerald-700 block text-[11px] font-semibold">Raised in Escrow</span>
+                      <span className="text-sm font-bold text-emerald-700 mt-0.5 block">{formatINR(raised)}</span>
+                    </div>
+                    <div className="p-3 bg-neutral-50 rounded-xl border border-neutral-200">
+                      <span className="text-red-600 block text-[11px] font-semibold">Remaining Needed</span>
+                      <span className="text-sm font-bold text-red-700 mt-0.5 block">
+                        {formatINR(Math.max(0, gap - raised))}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </section>
+        </div>
+      )}
 
 
 
@@ -1696,7 +2236,7 @@ export const PatientPortalView: React.FC<PatientPortalViewProps> = ({
                   {patientProfile.schemeName || 'Chief Minister Comprehensive Health Insurance Scheme (CMCHIS)'}
                 </h3>
                 <p className="text-xs text-neutral-600 mt-1">
-                  Card / Scheme Reference: <span className="font-mono font-bold">{patientProfile.schemeIdNumber || 'TN-CMCHIS-992384-2026'}</span>
+                  Card / Scheme Reference: <span className="font-mono font-bold">{patientProfile.beneficiaryId || 'TN-CMCHIS-992384-2026'}</span>
                 </p>
               </div>
               <span className="px-3 py-1 bg-emerald-600 text-white rounded-full text-xs font-bold shrink-0">
@@ -1707,7 +2247,7 @@ export const PatientPortalView: React.FC<PatientPortalViewProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-4 bg-neutral-50 rounded-xl">
                 <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Government Scheme Support</span>
-                <p className="text-xl font-bold text-neutral-900 mt-1">{formatINR(Number(patientProfile.govtAssistance) || 100000)}</p>
+                <p className="text-xl font-bold text-neutral-900 mt-1">{formatINR(Number(patientProfile.governmentAssistance ?? 0))}</p>
                 <p className="text-xs text-neutral-500 mt-0.5">Automatically subtracted from total treatment cost</p>
               </div>
 

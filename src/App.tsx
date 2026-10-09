@@ -91,7 +91,9 @@ export default function App() {
   // Listen to Firebase Auth state
   useEffect(() => {
     const unsubAuth = subscribeToAuthState((user: FirebaseUser | null) => {
-      setCurrentUser(user);
+      if (user) {
+        setCurrentUser(user);
+      }
     });
     return () => unsubAuth();
   }, []);

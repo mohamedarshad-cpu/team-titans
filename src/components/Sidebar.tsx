@@ -87,17 +87,52 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const portalInfo = rolePortals[role];
 
-  // Specific menu items strictly adhering to Section 6
+  // Specific menu items strictly adhering to role requirements
   const getMenuItems = (): SidebarItem[] => {
     switch (role) {
       case 'donor':
-        return [{ id: 'dashboard', label: 'Donor Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> }];
+        return [
+          { id: 'dashboard', label: 'Donor Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
+          { id: 'cases', label: 'Verified Cases', icon: <HeartHandshake className="w-4 h-4" /> },
+          { id: 'my-donations', label: 'My Donations', icon: <Receipt className="w-4 h-4" /> },
+          { id: 'tracking', label: 'Donation Tracking', icon: <Crosshair className="w-4 h-4" /> },
+          { id: 'impact', label: 'Impact & Outcomes', icon: <Sparkles className="w-4 h-4" /> },
+          { id: 'notifications', label: 'Notifications', icon: <Bell className="w-4 h-4" />, badge: unreadNotificationsCount },
+          { id: 'profile', label: 'Profile & Settings', icon: <User className="w-4 h-4" /> },
+        ];
       case 'patient':
-        return [{ id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> }];
+        return [
+          { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
+        ];
       case 'hospital':
-        return [{ id: 'dashboard', label: 'Hospital Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> }];
+        return [
+          { id: 'dashboard', label: 'Hospital Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
+          { id: 'cases', label: 'Assigned Patients', icon: <ClipboardList className="w-4 h-4" /> },
+          { id: 'verification', label: 'Pending Verification', icon: <UserCheck className="w-4 h-4" />, badge: 3 },
+          { id: 'costs', label: 'Treatment Costs', icon: <Calculator className="w-4 h-4" /> },
+          { id: 'documents', label: 'Document Vault', icon: <FileText className="w-4 h-4" /> },
+          { id: 'hospital-letters', label: 'Hospital Letters', icon: <CheckCheck className="w-4 h-4" /> },
+          { id: 'verified-cases', label: 'Verified Cases', icon: <CheckCircle2 className="w-4 h-4" /> },
+          { id: 'rejected-cases', label: 'Rejected Cases', icon: <X className="w-4 h-4" /> },
+          { id: 'payments', label: 'Escrow Payments', icon: <CreditCard className="w-4 h-4" /> },
+          { id: 'reconciliation', label: 'Reconciliation', icon: <Receipt className="w-4 h-4" /> },
+          { id: 'notifications', label: 'Notifications', icon: <Bell className="w-4 h-4" />, badge: unreadNotificationsCount },
+          { id: 'profile', label: 'Profile', icon: <User className="w-4 h-4" /> },
+        ];
       case 'reviewer':
-        return [{ id: 'dashboard', label: 'Reviewer Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> }];
+        return [
+          { id: 'dashboard', label: 'Reviewer Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
+          { id: 'cases-to-review', label: 'Cases to Review', icon: <ListFilter className="w-4 h-4" />, badge: 5 },
+          { id: 'ai-screening', label: 'AI Screening Results', icon: <Sparkles className="w-4 h-4" /> },
+          { id: 'human-review', label: 'Human Review Desk', icon: <UserCheck className="w-4 h-4" /> },
+          { id: 'final-decisions', label: 'Final Decision Console', icon: <Scale className="w-4 h-4" /> },
+          { id: 'approved-cases', label: 'Approved Cases', icon: <CheckCircle2 className="w-4 h-4" /> },
+          { id: 'rejected-cases', label: 'Rejected Cases', icon: <CheckCheck className="w-4 h-4" /> },
+          { id: 'more-information', label: 'More Information', icon: <ClipboardList className="w-4 h-4" /> },
+          { id: 'audit-trail', label: 'Audit Trail', icon: <History className="w-4 h-4" /> },
+          { id: 'notifications', label: 'Notifications', icon: <Bell className="w-4 h-4" />, badge: unreadNotificationsCount },
+          { id: 'profile', label: 'Profile', icon: <User className="w-4 h-4" /> },
+        ];
       default:
         return [];
     }
@@ -133,7 +168,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Role Navigation Items */}
-      <nav className="flex flex-col flex-1 px-3 py-4 space-y-1 overflow-y-auto bg-gray-50 border-r border-gray-200">
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {menuItems.map((item) => {
           const isActive = activeTab === item.id;
           return (
